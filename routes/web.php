@@ -29,12 +29,15 @@ Route::get('/api/docs', function () {
     ]);;
 });
 
-$router->group(["prefix" => "api/v1/genres"], function () use ($router) {
-    $router->get("/", "GenreController@index");
+$router->group(["prefix" => "api/v1/book-borrows"], function () use ($router) {
+    $router->get("/", "BookBorrowController@index");
 });
 
-$router->group(["prefix" => "api/v1/books"], function () use ($router) {
-    $router->get("/", "BookController@index");
+$router->group(["prefix" => "api/v1/book-borrow"], function () use ($router) {
+
+    $router->post("/", "BookBorrowController@store");
+    $router->get("/{id}", "BookBorrowController@show");
+    $router->get("/by-member/{member_id}", "BookBorrowController@byMember");
 });
 
 $router->group(["prefix" => "api/v1/book"], function () use ($router) {

@@ -35,9 +35,11 @@ class BookTransaction extends Model
         }
         return null;
     }
-    public static function ReturnBook($book_id)
+    public static function ReturnBook($id)
     {
-        $entity = BookReturn::find($book_id);
+       
+        $entity = BookReturn::findOrFail($id);
+       
         $entity->return_date = date("Y-m-d");
         $entity->save();
         return $entity;

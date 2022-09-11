@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ApiService\BookService;
 use App\ApiService\MemberService;
 use App\Models\BookReturn;
+use App\Models\BookTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -96,7 +97,6 @@ class BookReturnController extends Controller
      *      required=true,
      *      @OA\JsonContent(
      *       allOf={
-     *          @OA\Schema(ref="#/components/schemas/AutoIncrement"),
      *          @OA\Schema(ref="#/components/schemas/BookReturn")
      *       },
      *      )
@@ -123,46 +123,12 @@ class BookReturnController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        
         $this->validate($request, BookReturn::getDefaultValidator());
         $bookReturn = BookTransaction::ReturnBook($request->input("id"));
+        
         return response()->json(["model" => $bookReturn]);
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"BookReturn"},
-     *   path="/api/v1/book-return/{id}",
-     *   summary="BookReturn show",
-     *   @OA\Parameter(
-     *      name="id",
-     *      in="path",
-     *      required=true,
-     *      @OA\Schema(type="integer")
-     *    ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="OK",
-     *     @OA\JsonContent(
-     *       @OA\Property(ref="#/components/schemas/BookReturn")
-     *     ),
-     *   ),
-     *   @OA\Response(response=404, description="Not Found",
-     *       @OA\JsonContent(ref="#/components/schemas/ResourceNotFoundResponse")
-     *   ),
-     *   @OA\Response(response=403, description="User'rights is insufficient",
-     *       @OA\JsonContent(ref="#/components/schemas/ForbiddenResponse")
-     *    ),
-     * )
-     */
-    public function show(Request $request, $id)
-    {
-        $model = BookReturn::findOrFail($id);
-        $bookModel = BookService::getBook($model->book_id);
-        $memberModel = MemberService::getMember($model->member_id);
-
-        $model->setHidden(["created_at", "deleted_at", "updated_at"]);
-        $model->book = $bookModel;
-        $model->member = $memberModel;
-        return response()->json(["model" => $model]);
-    }
 }

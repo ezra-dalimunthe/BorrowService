@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\ApiService\BookService;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * @OA\Schema(
  *   schema="BookBorrow",
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class BookBorrow extends Model
 {
-    
+
     protected $table = 'book_transactions';
     protected $primaryKey = 'id';
     protected $fillable = ["book_id", "member_id", "loan_date", "due_back_date"];
@@ -31,16 +33,26 @@ class BookBorrow extends Model
     protected static function boot()
     {
         parent::boot();
-    
+
         static::addGlobalScope('exclude_return_date', function (Builder $builder) {
             $builder->whereNull('return_date');
+        });
+
+        static::creating(function (BookBorrow $model) {
+            \Log::info("decrement" . $model);
+            $status = BookService::bookInhand($model->book_id, "decrement");
+            if ($status < 200 || $status >= 300) {
+                //update failed, roll back.
+                \Log::info("canceled due to not available");
+                return false;
+            }
         });
     }
     public static function getDefaultValidator()
     {
         return [
             "book_ids" => "required|array|min:1|max:3",
-            "book_ids.*"=>"required|integer|distinct|min:1",
+            "book_ids.*" => "required|integer|distinct|min:1",
             "member_id" => "required|integer",
         ];
     }

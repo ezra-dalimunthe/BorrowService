@@ -39,10 +39,12 @@ $router->group(["prefix" => "api/v1/book-borrow"], function () use ($router) {
     $router->get("/{id}", "BookBorrowController@show");
     $router->get("/by-member/{member_id}", "BookBorrowController@byMember");
 });
+$router->group(["prefix" => "api/v1/book-return"], function () use ($router) {
+    $router->put("/{id}", "BookReturnController@update");
 
-$router->group(["prefix" => "api/v1/book"], function () use ($router) {
-    $router->post("/", "BookController@store");
-    $router->get("/{id}", "BookController@show");
-    $router->put("/{id}", "BookController@update");
-    $router->delete("/{id}", "BookController@destroy");
+});
+$router->group(["prefix" => "api/v1/statistic"], function () use ($router) {
+    $router->get("/book-loan-transaction-by-year[/{year}]", "StatisticController@bookLoanTransactionByYear");
+    $router->get("/book-return-transaction-by-year[/{year}]", "StatisticController@bookReturnTransactionByYear");
+
 });

@@ -13,9 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call([
-           
-        // ]);
+        \DB::table("book_transactions")->truncate();
+        $this->call([BookTransactionSeeder::class]);
 
     }
 }

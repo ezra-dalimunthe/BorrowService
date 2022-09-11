@@ -22,7 +22,18 @@ class BookService
         ])->get(self::$baseUrl . "entity/books", [
             "ids" => implode(",", $ids),
         ]);
-        
+
         return $response->collect("books");
+    }
+    public static function bookInhand($book_id, $operation)
+    {
+        $response = Http::acceptJson()->withHeaders([
+            'api-key' => '34xui34r54q0dfa8',
+        ])->put(self::$baseUrl . "inter-service/book-inhand/$book_id", [
+            "book_id" => $book_id,
+            "operation" => $operation,
+        ]);
+        \Log::info($response->status());
+        return $response->status();
     }
 }

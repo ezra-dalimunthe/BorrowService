@@ -39,11 +39,11 @@ class BookBorrow extends Model
         });
 
         static::creating(function (BookBorrow $model) {
-            \Log::info("decrement" . $model);
+            
             $status = BookService::bookInhand($model->book_id, "decrement");
             if ($status < 200 || $status >= 300) {
                 //update failed, roll back.
-                \Log::info("canceled due to not available");
+            
                 return false;
             }
         });

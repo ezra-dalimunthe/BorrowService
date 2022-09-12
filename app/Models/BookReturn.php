@@ -30,12 +30,12 @@ class BookReturn extends Model
         parent::boot();
 
         static::updating(function (BookReturn $model) {
-            \Log::info("increment" . $model);
+            
             $status = BookService::bookInhand($model->book_id, "increment");
             if ($status < 200 || $status >= 300) {
                 //update failed, roll back.
                 $model->refresh();
-                \Log::info("canceled" . $model);
+            
                 return false;
             }
         });

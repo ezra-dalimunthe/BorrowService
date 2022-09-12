@@ -5,21 +5,22 @@ use Illuminate\Support\Facades\Http;
 
 class MemberService
 {
-    private static $baseUrl = "http://127.0.0.1:8202/api/v1/";
+    
 
     public static function getMember($id)
     {
-
+        $baseUrl = env("MEMBER_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get(self::$baseUrl . "entity/member/" . $id);
+        ])->get($baseUrl . "entity/member/" . $id);
         return $response->json("member");
     }
     public static function getMembers(array $ids)
     {
+        $baseUrl = env("MEMBER_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get(self::$baseUrl . "entity/members", [
+        ])->get($baseUrl . "entity/members", [
             "ids" => implode(",", $ids),
         ]);
         return $response->collect("members");

@@ -5,21 +5,21 @@ use Illuminate\Support\Facades\Http;
 
 class BookService
 {
-    private static $baseUrl = "http://127.0.0.1:8201/api/v1/";
 
     public static function getBook($id)
     {
-
+        $baseUrl = env("BOOK_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get(self::$baseUrl . "entity/book/" . $id);
+        ])->get($baseUrl . "entity/book/" . $id);
         return $response->json("book");
     }
     public static function getBooks(array $ids)
     {
+        $baseUrl = env("BOOK_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get(self::$baseUrl . "entity/books", [
+        ])->get($baseUrl . "entity/books", [
             "ids" => implode(",", $ids),
         ]);
 
@@ -27,9 +27,10 @@ class BookService
     }
     public static function bookInhand($book_id, $operation)
     {
+        $baseUrl = env("BOOK_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->put(self::$baseUrl . "inter-service/book-inhand/$book_id", [
+        ])->put($baseUrl . "inter-service/book-inhand/$book_id", [
             "book_id" => $book_id,
             "operation" => $operation,
         ]);

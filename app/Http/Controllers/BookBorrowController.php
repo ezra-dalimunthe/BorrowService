@@ -160,6 +160,7 @@ class BookBorrowController extends Controller
      */
     public function show(Request $request, $id)
     {
+        
         $model = BookBorrow::findOrFail($id);
         $bookModel = BookService::getBook($model->book_id);
         $memberModel = MemberService::getMember($model->member_id);

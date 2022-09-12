@@ -34,7 +34,7 @@ class BookService
             "book_id" => $book_id,
             "operation" => $operation,
         ]);
-        \Log::info($response->status());
+        
         return $response->status();
     }
 }

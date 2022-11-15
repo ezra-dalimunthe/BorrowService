@@ -15,7 +15,8 @@ class BookTransactionSeeder extends Seeder
      */
     public function run()
     {
-        echo "truncate table", "\n";
+        
+        echo "seeding ", "\n";
         for ($i = 0; $i < 100; $i++) {
             echo ".";
             $faker = \Faker\Factory::create();
@@ -34,7 +35,7 @@ class BookTransactionSeeder extends Seeder
             if ($rndReturned) {
                 $borrowedBook = BookBorrow::inRandomOrder()->first();
                 if ($borrowedBook==null) continue;
-                echo "\n", $borrowedBook->id, "\n";
+                
                 if ($borrowedBook) {
                     $entityReturn = BookReturn::find($borrowedBook->id);
                     $isLate = (bool) random_int(0, 1);

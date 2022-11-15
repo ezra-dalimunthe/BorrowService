@@ -11,11 +11,12 @@ use Illuminate\Support\Arr;
 
 class BookReturnController extends Controller
 {
-
+    use AuthorizationTrait;
     /**
      * @OA\Get(
      *   tags={"BookReturn"},
      *   path="/api/v1/book-returns",
+     *   security={{ "apiAuth": {} }},
      *   summary="List Of returned book",
      *    @OA\Parameter( name="page", in="query", required=false,
      *        description="expected page number", @OA\Schema(type="integer")
@@ -53,6 +54,7 @@ class BookReturnController extends Controller
      */
     public function index(Request $request)
     {
+        $this->allowRole(["front_desk"]);
         $sortBy = $request->input("sort-by", "loan_date");
         $sortDir = $request->input("sort-dir", "asc");
         $perPage = $request->input("per-page", 20);
@@ -86,6 +88,7 @@ class BookReturnController extends Controller
      * @OA\Put(
      *   tags={"BookReturn"},
      *   path="/api/v1/book-return/{id}",
+     *   security={{ "apiAuth": {} }},
      *   summary="Set borrowed book returned.",
      *    @OA\Parameter(
      *      name="id",
@@ -124,10 +127,10 @@ class BookReturnController extends Controller
     public function update(Request $request, $id)
     {
 
-        
+        $this->allowRole(["front_desk"]);
         $this->validate($request, BookReturn::getDefaultValidator());
         $bookReturn = BookTransaction::ReturnBook($request->input("id"));
-        
+
         return response()->json(["model" => $bookReturn]);
     }
 

@@ -11,7 +11,7 @@ class BookService
         $baseUrl = env("BOOK_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get($baseUrl . "entity/book/" . $id);
+        ])->get($baseUrl . "/api/v1/entity/book/" . $id);
         return $response->json("book");
     }
     public static function getBooks(array $ids)
@@ -19,7 +19,7 @@ class BookService
         $baseUrl = env("BOOK_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get($baseUrl . "entity/books", [
+        ])->get($baseUrl . "/api/v1/entity/books", [
             "ids" => implode(",", $ids),
         ]);
 
@@ -27,14 +27,15 @@ class BookService
     }
     public static function bookInhand($book_id, $operation)
     {
-        $baseUrl = env("BOOK_SERVICE_URL");
+        $baseUrl = env("BOOK_SERVICE_URL") . "/api/v1/inter-service/book-inhand/$book_id";
+        \Log::info($baseUrl);
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->put($baseUrl . "inter-service/book-inhand/$book_id", [
+        ])->put($baseUrl, [
             "book_id" => $book_id,
             "operation" => $operation,
         ]);
-        
+
         return $response->status();
     }
 }

@@ -11,11 +11,12 @@ use Illuminate\Support\Arr;
 
 class BookBorrowController extends Controller
 {
-
+use AuthorizationTrait;
     /**
      * @OA\Get(
      *   tags={"BookBorrow"},
      *   path="/api/v1/book-borrows",
+     *   security={{ "apiAuth": {} }},
      *   summary="BookBorrow index",
      *    @OA\Parameter( name="page", in="query", required=false,
      *        description="expected page number", @OA\Schema(type="integer")
@@ -53,7 +54,7 @@ class BookBorrowController extends Controller
      */
     public function index(Request $request)
     {
-
+        $this->allowRole(["front_desk"]);
         $sortBy = $request->input("sort-by", "loan_date");
         $sortDir = $request->input("sort-dir", "asc");
         $perPage = $request->input("per-page", 20);
@@ -87,6 +88,7 @@ class BookBorrowController extends Controller
      * @OA\Post(
      *   tags={"BookBorrow"},
      *   path="/api/v1/book-borrow",
+     *   security={{ "apiAuth": {} }},
      *   summary="BookBorrow store",
      *    @OA\RequestBody(
      *      required=true,
@@ -118,6 +120,7 @@ class BookBorrowController extends Controller
      */
     public function store(Request $request)
     {
+        $this->allowRole(["front_desk"]);
         $this->validate($request, BookBorrow::getDefaultValidator());
         $book_ids = $request->input("book_ids");
         $member_id = $request->input("member_id");
@@ -136,6 +139,7 @@ class BookBorrowController extends Controller
      * @OA\Get(
      *   tags={"BookBorrow"},
      *   path="/api/v1/book-borrow/{id}",
+     *   security={{ "apiAuth": {} }},
      *   summary="BookBorrow show",
      *   @OA\Parameter(
      *      name="id",
@@ -160,7 +164,7 @@ class BookBorrowController extends Controller
      */
     public function show(Request $request, $id)
     {
-        
+        $this->allowRole(["front_desk"]);
         $model = BookBorrow::findOrFail($id);
         $bookModel = BookService::getBook($model->book_id);
         $memberModel = MemberService::getMember($model->member_id);
@@ -175,6 +179,7 @@ class BookBorrowController extends Controller
      * @OA\Get(
      *   tags={"BookBorrow"},
      *   path="/api/v1/book-borrow/by-member/{member_id}",
+     *   security={{ "apiAuth": {} }},
      *   summary="Summary",
      *   @OA\Parameter(
      *      name="member_id",
@@ -187,6 +192,7 @@ class BookBorrowController extends Controller
      */
     public function byMember(Request $request, $member_id)
     {
+        $this->allowRole(["front_desk"]);
         $dataPage = BookBorrow::where("member_id", $member_id)
             ->orderBy("loan_date", "asc")
             ->paginate(5);

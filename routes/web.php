@@ -29,17 +29,17 @@ Route::get('/api/docs', function () {
     ]);;
 });
 
-$router->group(["prefix" => "api/v1/book-borrows"], function () use ($router) {
+$router->group(["prefix" => "api/v1/book-borrows", "middleware"=>"auth"], function () use ($router) {
     $router->get("/", "BookBorrowController@index");
 });
 
-$router->group(["prefix" => "api/v1/book-borrow"], function () use ($router) {
+$router->group(["prefix" => "api/v1/book-borrow", "middleware"=>"auth"], function () use ($router) {
 
     $router->post("/", "BookBorrowController@store");
     $router->get("/{id}", "BookBorrowController@show");
     $router->get("/by-member/{member_id}", "BookBorrowController@byMember");
 });
-$router->group(["prefix" => "api/v1/book-return"], function () use ($router) {
+$router->group(["prefix" => "api/v1/book-return", "middleware"=>"auth"], function () use ($router) {
     $router->put("/{id}", "BookReturnController@update");
 
 });

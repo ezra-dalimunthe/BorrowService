@@ -12,7 +12,7 @@ class MemberService
         $baseUrl = env("MEMBER_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get($baseUrl . "entity/member/" . $id);
+        ])->get($baseUrl . "/api/v1/entity/member/" . $id);
         return $response->json("member");
     }
     public static function getMembers(array $ids)
@@ -20,7 +20,7 @@ class MemberService
         $baseUrl = env("MEMBER_SERVICE_URL");
         $response = Http::acceptJson()->withHeaders([
             'api-key' => '34xui34r54q0dfa8',
-        ])->get($baseUrl . "entity/members", [
+        ])->get($baseUrl . "/api/v1/entity/members", [
             "ids" => implode(",", $ids),
         ]);
         return $response->collect("members");

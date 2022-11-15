@@ -41,6 +41,7 @@ class BookBorrow extends Model
         static::creating(function (BookBorrow $model) {
             
             $status = BookService::bookInhand($model->book_id, "decrement");
+            \Log::info(["service book"=> $status]);
             if ($status < 200 || $status >= 300) {
                 //update failed, roll back.
             

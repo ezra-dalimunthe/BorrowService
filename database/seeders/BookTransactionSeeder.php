@@ -33,6 +33,7 @@ class BookTransactionSeeder extends Seeder
             $rndReturned = (bool) random_int(0, 1);
             if ($rndReturned) {
                 $borrowedBook = BookBorrow::inRandomOrder()->first();
+                if ($borrowedBook==null) continue;
                 echo "\n", $borrowedBook->id, "\n";
                 if ($borrowedBook) {
                     $entityReturn = BookReturn::find($borrowedBook->id);

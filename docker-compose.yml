@@ -1,0 +1,100 @@
+version: "3"
+services:
+  borrow_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: reading-point/borrow_service:v1.0
+    container_name: reading-point-borrow-app-service
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+    tty: true
+    environment:
+      SERVICE_NAME: borrow_service
+      SERVICE_TAGS: v1
+      APP_NAME: borrow_service
+      APP_ENV: local
+      APP_KEY: 28ef3d143ba729acf55d43f3a0f12c65
+      APP_DEBUG: 0
+      APP_URL: http://borrow_service
+      APP_TIMEZONE: UTC
+
+      LOG_CHANNEL: stack
+      LOG_SLACK_WEBHOOK_URL:
+
+      DB_CONNECTION: mysql
+      DB_HOST: reading-point-borrow-db-service
+      DB_PORT: 3306
+      DB_DATABASE: reading_point_borrow
+      DB_USERNAME: root
+      DB_PASSWORD: unpri2022
+
+      CACHE_DRIVER: redis
+      QUEUE_CONNECTION: sync
+      REDIS_HOST: redis_service
+      REDIS_PORT: 6379
+      REDIS_DATABASE: 0
+      REDIS_PASSWORD: halotec123
+
+      AUTH_SERVICE_URL: http://reading-point-auth-app-service:8000
+      BOOK_SERVICE_URL: http://reading-point-book-app-service:8000
+      MEMBER_SERVICE_URL: http://reading-point-member-app-service:8000
+
+    working_dir: /var/www/html
+
+    command: php -S borrow_service:8000 -t public
+    ports:
+      - "8904:8000"
+    networks:
+      - reading-point-borrow-network
+      - reading-point-auth-service-network
+      - reading-point-book-service-network
+      - reading-point-member-service-network
+
+  reading_point_db:
+    image: mariadb:10.6
+    container_name: reading-point-borrow-db-service
+    volumes:
+      - reading-point-borrow-service-db:/var/lib/mysql
+    restart: unless-stopped
+    tty: true
+
+    environment:
+      MYSQL_DATABASE: reading_point_borrow
+      MYSQL_ROOT_PASSWORD: unpri2022
+  
+    networks:
+      - reading-point-borrow-network
+  redis_service:
+    image: redis:7.0.5-alpine
+    container_name: reading-point-borrow-redis-service
+    environment:
+      - REDIS_PORT_NUMBER=6379
+
+    command: redis-server --save 20 1 --loglevel warning --requirepass halotec123
+    volumes:
+      - cache:/data
+    networks:
+      - reading-point-borrow-network
+networks:
+  reading-point-borrow-network:
+    driver: bridge
+    name: reading-point-borrow-network
+  reading-point-auth-service-network:
+    external: true
+    name: reading-point-auth-network
+  reading-point-book-service-network:
+    external: true
+    name: reading-point-book-network
+  reading-point-member-service-network: 
+    external: true
+    name: reading-point-member-network
+volumes:
+  reading-point-borrow-service-db:
+    driver: local
+    name: reading-point-borrow-service-db-vol
+  cache:
+    driver: local
+    name: reading-point-borrow-redis_cache
+
